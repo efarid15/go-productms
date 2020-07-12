@@ -17,7 +17,7 @@ func main() {
     hp := handlers.NewProduct(newlog)
 
     sm := http.NewServeMux()
-    sm.Handle("/product", hp)
+    sm.Handle("/products", hp)
 	sm.Handle("/product/", hp)
 
 	s := http.Server{

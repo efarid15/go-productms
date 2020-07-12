@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"gomicroservice/model"
 	"gomicroservice/utils"
 	"log"
@@ -36,7 +35,7 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request){
 			p.getProducts(w, r)
 			return
 		case 3 :
-			p.showProduct(w, r)
+			p.showProduct(w)
 			return
 		default :
 			break
@@ -44,12 +43,12 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request){
 
 	}
 
-	if r.Method == "POST" {
+	if r.Method == "POST" || r.Method == "OPTIONS" {
 		p.insertProduct(w, r)
 		return
 	}
 
-	if r.Method == "PUT" {
+	if r.Method == "PUT" || r.Method == "OPTIONS" {
 		p.updateProduct(w, r)
 		return
 	}
@@ -74,7 +73,7 @@ func (p *Products) getProducts(w http.ResponseWriter, r *http.Request) {
 		return
 }
 
-func (p *Products) showProduct(w http.ResponseWriter, r *http.Request) {
+func (p *Products) showProduct(w http.ResponseWriter) {
 
 	p.l.Println("Handle Show Products")
 	id, err := strconv.ParseInt(Fields[UrlLen-1], 10, 64)
@@ -86,7 +85,8 @@ func (p *Products) showProduct(w http.ResponseWriter, r *http.Request) {
 
 	lp, err := model.ShowProduct(id)
 		if err != nil {
-			fmt.Printf("%v \n", err)
+			p.l.Printf("%v \n", err)
+			return
 		}
 
 		utils.ResponseJSON(w, lp, http.StatusOK)
@@ -100,6 +100,7 @@ func (p *Products) insertProduct(w http.ResponseWriter, r *http.Request) {
 	var dataproduct model.Product
 
 	if err := json.NewDecoder(r.Body).Decode(&dataproduct);
+
 	err != nil {
 		utils.ResponseJSON(w, err, http.StatusBadRequest)
 		p.l.Printf("Error : %v \n", err)
@@ -140,7 +141,5 @@ func (p *Products) updateProduct(w http.ResponseWriter, r *http.Request) {
 		utils.ResponseJSON(w, dataproduct, http.StatusCreated)
 		p.l.Println(dataproduct)
 		return
-
-
 }
 

@@ -15,14 +15,12 @@ type Product struct {
 	Price   float32 `json:"price"`
 }
 
-
 const (
 	table          = "product"
 	//layoutDatetime = "2006-01-02 15:04:05"
 )
 
 type ListProducts []Product
-
 
 func ShowProduct(id int64) (ListProducts, error)  {
 	var listProduct ListProducts
@@ -47,13 +45,11 @@ func ShowProduct(id int64) (ListProducts, error)  {
 		case sql.ErrNoRows:
 			fmt.Printf("No rows returned \n", err)
 		case nil:
-			fmt.Printf("%s \n", err)
+			listProduct = append(listProduct, product)
 		default:
 			return nil, err
 		}
-		listProduct = append(listProduct, product)
 	}
-
 	return listProduct, nil
 }
 
@@ -80,13 +76,11 @@ func GetProductAll() (ListProducts, error)  {
 		case sql.ErrNoRows:
 			fmt.Printf("Error : %v \n", err)
 		case nil:
-			fmt.Printf("%s \n", err)
+			listProduct = append(listProduct, product)
 		default:
 			return nil, err
 		}
-		listProduct = append(listProduct, product)
 	}
-
 	return listProduct, nil
 }
 
@@ -165,4 +159,3 @@ func UpdateProduct(product Product) error {
 	}
 
 }
-
